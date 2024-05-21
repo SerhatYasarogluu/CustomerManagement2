@@ -67,7 +67,6 @@ namespace CustomerUI
                 services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer("Server=.;Database=MyDataBase;Trusted_Connection=True;TrustServerCertificate=True"));
                 services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-                services.AddScoped(typeof(IService<>), typeof(Service<>));
                 services.AddScoped<CustomerOperations>(); 
             });
 

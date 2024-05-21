@@ -1,4 +1,5 @@
-﻿using CustomerManagement.Entities;
+﻿using CustomerManagement.DAL.Absract;
+using CustomerManagement.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,14 @@ namespace CustomerManagement.BLL
 {
     public class CustomerOperations
     {
-        private IService<Customer> _customerService;
+        private IRepository<Customer> _customerRepository;
+
         bool validPhone = false;
-        public CustomerOperations(IService<Customer> customerService)
+        
+        public CustomerOperations(IRepository<Customer> customerRepository)
         {
-            _customerService = customerService;
+            _customerRepository = customerRepository;
+            
         }
 
         public async Task AddCustomer()
@@ -41,7 +45,7 @@ namespace CustomerManagement.BLL
             }
 
             var customer = new Customer { Name = name, PhoneNumber = phoneNumber };
-            await _customerService.AddAsync(customer);
+            await _customerRepository.AddAsync(customer);
             Console.WriteLine("Müşteri başarıyla eklendi.");
         }
 
@@ -49,8 +53,8 @@ namespace CustomerManagement.BLL
         {
             Console.Write("Silinecek Müşterinin ID'sini giriniz: ");
             int id = int.Parse(Console.ReadLine());
-            var customer = await _customerService.GetByIdAsync(id);
-            await _customerService.DeleteAsync(customer);
+            var customer = await _customerRepository.GetByIdAsync(id);
+            await _customerRepository.DeleteAsync(customer);
             Console.WriteLine("Müşteri silindi.");
         }
 
@@ -59,7 +63,7 @@ namespace CustomerManagement.BLL
             Console.Write("Güncellenecek Müşterinin Id sini giriniz: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            var customer = await _customerService.GetByIdAsync(id);
+            var customer = await _customerRepository.GetByIdAsync(id);
             if (customer != null)
             {
                 Console.Write("Yeni Müşterinin ismi: ");
@@ -69,7 +73,7 @@ namespace CustomerManagement.BLL
 
                 customer.Name = newName;
                 customer.PhoneNumber = newPhoneNumber;
-                await _customerService.UpdateAsync(customer);
+                await _customerRepository.UpdateAsync(customer);
                 Console.WriteLine("Müşteri başarıyla güncellendi.");
             }
             else
@@ -82,7 +86,7 @@ namespace CustomerManagement.BLL
         {
             Console.Write("Getirilmesini istediğiniz Müşteri Id sini giriniz:");
             int id = Convert.ToInt32(Console.ReadLine());
-            var customer=await _customerService.GetByIdAsync(id);
+            var customer=await _customerRepository.GetByIdAsync(id);
             if (customer != null)
             {
                 Console.WriteLine($"ID: {customer.Id}, Name: {customer.Name}, Phone: {customer.PhoneNumber}");
@@ -92,7 +96,7 @@ namespace CustomerManagement.BLL
 
         public async Task ListCustomers()
         {
-            var customers =await _customerService.GetAllAsync();
+            var customers =await _customerRepository.GetAllAsync();
             if (customers.Any())
             {
                 foreach (var customer in customers)
